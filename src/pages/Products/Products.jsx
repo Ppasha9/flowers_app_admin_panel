@@ -1,48 +1,46 @@
-import React, { useEffect, useState } from 'react'
+import React from "react"
+import { Link } from 'react-router-dom'
 
 import Table from '../../components/table/Table'
 
-import customerList from '../../assets/JsonData/customers-list.json'
-
 const customerTableHead = [
     '',
-    'name',
-    'email',
-    'phone',
-    'total orders',
-    'total spend',
-    'location'
+    'Название',
+    'Описание',
+    'Цена',
+    'Категории',
+    'Тэги',
+    'Цветы',
 ]
 
 const renderHead = (item, index) => <th key={index}>{item}</th>
 
 const renderBody = (item, index) => (
     <tr key={index}>
-        <td>{item.id}</td>
         <td>{item.name}</td>
         <td>{item.email}</td>
+        <td>{item.surname}</td>
         <td>{item.phone}</td>
-        <td>{item.total_orders}</td>
-        <td>{item.total_spend}</td>
-        <td>{item.location}</td>
     </tr>
 )
 
-const Customers = () => {
-    const [isFetching, setIsFetching] = useState(true);
-
-    useEffect({
-        
-    }, []);
-
-    if (isFetching) {
-        return 
-    }
+const Products = () => {
     return (
         <div>
-            <h2 className="page-header">
-                Покупатели
-            </h2>
+            <div className="row">
+                <div className="col">
+                    <h2 className="page-header">
+                        Товары
+                    </h2>
+                </div>
+                <div className="col">
+                    <div className="d-flex justify-content-end">
+                        <Link to="/new_product">
+                            <button type="submit" className="btn btn-primary btn-lg">Добавить</button>
+                        </Link>
+                    </div>
+                </div>
+            </div>
             <div className="row">
                 <div className="col-12">
                     <div className="card">
@@ -51,7 +49,7 @@ const Customers = () => {
                                 limit='10'
                                 headData={customerTableHead}
                                 renderHead={(item, index) => renderHead(item, index)}
-                                bodyData={customerList}
+                                bodyData={[]}
                                 renderBody={(item, index) => renderBody(item, index)}
                             />
                         </div>
@@ -59,7 +57,7 @@ const Customers = () => {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default Customers
+export default Products;

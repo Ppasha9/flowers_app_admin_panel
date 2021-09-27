@@ -1,6 +1,8 @@
-import ThemeReducer from "./ThemeReducer"
 import { combineReducers } from "redux"
 
-const rootReducer = combineReducers({ThemeReducer})
+import ThemeReducer from "./ThemeReducer"
+import LoginReducer from "./LoginReducer"
+
+const rootReducer = combineReducers({ ThemeReducer, LoginReducer })
 
 export default rootReducer

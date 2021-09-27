@@ -11,7 +11,7 @@
     },
     {
         "display_name": "Админы",
-        "route": "/customers",
+        "route": "/admins",
         "icon": "bx bx-user-pin"
     },
     {

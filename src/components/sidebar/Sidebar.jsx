@@ -10,7 +10,6 @@ import './sidebar.css'
 
 
 const Sidebar = props => {
-
     const activeItem = sidebar_items.findIndex(item => item.route === props.location.pathname)
 
     return (
@@ -20,7 +19,7 @@ const Sidebar = props => {
             </div>
             {
                 sidebar_items.map((item, index) => (
-                    <Link to={item.route} key={index}>
+                    <Link to={item.route} key={index} style={{ textDecoration: 'none' }}>
                         <SidebarItem
                             title={item.display_name}
                             icon={item.icon}
