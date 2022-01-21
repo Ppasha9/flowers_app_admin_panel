@@ -20,7 +20,7 @@ const store = createStore(
   applyMiddleware(createLogger())
 )
 
-document.title = 'Tua CRM'
+document.title = 'ORLOVE Admin Panel'
 
 ReactDOM.render(
   <Provider store={store}>

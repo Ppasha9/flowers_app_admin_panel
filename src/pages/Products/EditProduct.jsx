@@ -1,8 +1,8 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useEffect } from "react"
 import { default as ReactSelect } from "react-select"
 import { components } from "react-select"
 import { AiFillDelete } from "react-icons/ai"
-import { useHistory, Redirect } from "react-router-dom"
+import { Redirect } from "react-router-dom"
 
 import categories_items from "../../assets/JsonData/categories-list.json"
 import tags_items from "../../assets/JsonData/tags-list.json"
@@ -10,9 +10,10 @@ import flowers_items from "../../assets/JsonData/flowers-list.json"
 
 import ProductsRequestsHandler from "./ProductsRequestsHandler";
 import { ClipLoader } from "react-spinners"
+import { categoriesFromEngToRus } from "../../utils/utils"
 
-const NewProduct = () => {
-    const history = useHistory();
+const EditProduct = (props) => {
+    const [isFetching, setIsFetching] = useState(true);
     const [productName, setProductName] = useState("");
     const [productContent, setProductContent] = useState("");
     const [productPrice, setProductPrice] = useState(0);
@@ -24,8 +25,40 @@ const NewProduct = () => {
     const [curParamValue, setCurParamValue] = useState("");
     const [curParamPrice, setCurParamPrice] = useState(0);
     const [imageData, setImageData] = useState(null);
-    const [isProductCreating, setIsProductCreating] = useState(false);
+    const [isProductEditing, setIsProductEditing] = useState(false);
     const [needRedirectToProducts, setNeedRedirectToProducts] = useState(false);
+
+    useEffect(() => {
+        try {
+            ProductsRequestsHandler.getOne(props.match.params.id).then((res) => {
+                setProductName(res.name);
+                setProductContent(res.content);
+                setProductPrice(res.price);
+
+                const newCategories = res.categories.map((cat) => ({ value: cat, label: categoriesFromEngToRus(cat) }));
+                setCategories(newCategories);
+
+                const newTags = res.tags.map((tag) => ({ value: tag, label: tag }));
+                setTags(newTags);
+
+                const newFlowers = res.flowers.map((flower) => ({ label: flower, value: flower }));
+                setFlowers(newFlowers);
+
+                const newParams = res.parameters.map((param) => ({ name: param.name, value: param.value, price: param.price }));
+                setParams(newParams);
+
+                setImageData({
+                    file: null,
+                    previewUrl: res.picUrl,
+                });
+
+                console.log("Fetched product: ", res);
+                setIsFetching(false);
+            });
+        } catch (e) {
+            alert("Произошла ошибка при загрузке товара");
+        }
+    }, []);
 
     const handleCategoriesChange = (selected) => {
         setCategories(selected);
@@ -95,32 +128,7 @@ const NewProduct = () => {
         setParams(params.filter((_, index) => index !== idx));
     }
 
-    const onFileSelected = e => {
-        e.preventDefault();
-
-        var reader = new FileReader();
-        var file = e.target.files[0];
-
-        reader.onloadend = () => {
-            setImageData({
-                file: file,
-                previewUrl: reader.result,
-            });
-        }
-
-        reader.readAsDataURL(file);
-    }
-
-    const uploadImageRef = useRef();
-
-    const onFileSelectBtnClicked = e => {
-        e.preventDefault();
-        uploadImageRef.current.click();
-    }
-
-    const onSubmitProduct = (e) => {
-        e.preventDefault();
-
+    const onSubmitProduct = () => {
         if (productName === "") {
             alert("Заполните название товара");
             return;
@@ -156,44 +164,33 @@ const NewProduct = () => {
             return;
         }
 
-        setIsProductCreating(true);
+        setIsProductEditing(true);
 
-        const fd = new FormData();
-        fd.append("name", productName);
-        fd.append("content", productContent);
-        fd.append("price", productPrice);
+        const data = {
+            name: productName,
+            content: productContent,
+            price: productPrice,
+            parameters: params,
+            categories: categories.map((c) => c.value),
+            tags: tags.map((t) => t.value),
+            flowers: flowers.map((f) => f.value),
+        };
 
-        categories.forEach((c) => {
-            fd.append("categories", c.value);
-        })
-
-        tags.forEach((t) => {
-            fd.append("tags", t.value);
-        })
-
-        flowers.forEach((f) => {
-            fd.append("flowers", f.value);
-        })
-
-        fd.append("picture", imageData.file, imageData.file.name);
-
-        ProductsRequestsHandler.addNewProduct(fd).then((id) => {
-            const data = {
-                id,
-                parameters: params,
-            }
-
-            ProductsRequestsHandler.addParametersToProduct(data).then((_) => {
-                setIsProductCreating(false);
-                setNeedRedirectToProducts(true);
-            }).catch((error) => {
-                alert("При добавлении параметров к новому продукту произошла ошибка.");
-                return;
-            });
+        ProductsRequestsHandler.editOne(props.match.params.id, data).then(() => {
+            setIsProductEditing(false);
+            setNeedRedirectToProducts(true);
         }).catch((e) => {
-            alert("При добавлении нового продукта произошла ошибка.");
+            alert("При редактировании товара произошла ошибка.");
             return;
-        });
+        });;
+    }
+
+    if (isFetching) {
+        return (
+            <div className="container">
+                <ClipLoader loading={isFetching} />
+            </div>
+        );
     }
 
     if (needRedirectToProducts) {
@@ -304,7 +301,7 @@ const NewProduct = () => {
                                     </div>
                                     <div className="col-3">
                                         <div className="form-control">
-                                            <label>Добавачная цена: </label>
+                                            <label>Цена: </label>
                                             <span> {val.price} ₽</span>
                                         </div>
                                     </div>
@@ -341,20 +338,20 @@ const NewProduct = () => {
                             <button className="btn btn-primary btn-sm" style={{ marginTop: '5px' }} onClick={addNewParam}>Добавить</button>
                         </div>
                     </div>
-                    <label for="productImage">Изображение товара</label>
-                    <div className="form-group" id="productImage">
-                        <input type="file" onChange={onFileSelected} ref={uploadImageRef} style={{ display: "none" }} />
-                        <button className="btn btn-secondary btn-md" onClick={onFileSelectBtnClicked} style={{ marginTop: "5px" }}>Выбрать изображение</button>
-                        {imageData !== null &&
-                            <img src={imageData.previewUrl} className="d-block img-fluid img-thumbnail" style={{ marginTop: "5px", maxWidth: "40%", height: "auto" }} alt="Изображение товара" />
-                        }
-                    </div>
-                    <button className="btn btn-primary btn-lg container" style={{ marginTop: "20px" }} onClick={onSubmitProduct}>Добавить товар</button>
-                    {isProductCreating && <ClipLoader loading={isProductCreating} />}
+                    {imageData !== null &&
+                        <>
+                            <label for="productImage">Изображение товара</label>
+                            <div className="form-group" id="productImage">
+                                <img src={imageData.previewUrl} className="d-block img-fluid img-thumbnail" style={{ marginTop: "5px", maxWidth: "40%", height: "auto" }} alt="Изображение товара" />
+                            </div>
+                        </>
+                    }
+                    <button className="btn btn-primary btn-lg container" style={{ marginTop: "20px" }} onClick={onSubmitProduct}>Редактировать товар</button>
+                    {isProductEditing && <ClipLoader loading={isProductEditing} />}
                 </form>
             </div>
         </div>
     );
 }
 
-export default NewProduct;
+export default EditProduct;

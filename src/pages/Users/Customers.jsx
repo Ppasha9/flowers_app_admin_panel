@@ -26,9 +26,6 @@ const Customers = () => {
     const [isFetching, setIsFetching] = useState(true);
     const [users, setUsers] = useState([]);
 
-    console.log(encodeURI(JSON.stringify([])));
-    console.log(encodeURI(JSON.stringify([{ name: "Размер", value: "Средний", price: 1500.0 }])));
-
     useEffect(() => {
         try {
             UsersRequestsHandler.getAllUsers(true).then((res) => {
