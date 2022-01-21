@@ -9,10 +9,11 @@ import Routes from '../Routes'
 
 import './layout.css'
 
-import {isAuthorized} from "../../utils/local-storage/auth";
+import { isAuthorized } from "../../utils/local-storage/auth";
 
 const Layout = () => {
-    const isLogin = isAuthorized()
+    let isLogin = useSelector(state => state.LoginReducer.login)
+    isLogin = isLogin || isAuthorized()
 
     console.log("Is logged", isLogin);
 

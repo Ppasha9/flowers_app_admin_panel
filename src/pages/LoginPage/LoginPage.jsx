@@ -7,6 +7,7 @@ import LoginAction from "../../redux/actions/LoginAction"
 import { setAuthorized, setAuthToken } from "../../utils/local-storage/auth"
 
 import './loginPage.css'
+import {history} from "../../utils/utils";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -39,6 +40,7 @@ const LoginPage = () => {
                 setAuthorized(true);
                 setAuthToken(res.token);
                 dispatch(LoginAction.setLogin(true));
+                history.push("/");
             });
         } catch (e) {
             alert(`${e}`);

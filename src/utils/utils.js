@@ -1,3 +1,5 @@
+import { createBrowserHistory } from 'history';
+
 export const categoriesFromEngToRus = (engCat) => {
     switch (engCat) {
         case "New":
@@ -23,3 +25,5 @@ export const categoriesFromRusToEng = (rusCat) => {
             return "";
     }
 }
+
+export const history = createBrowserHistory();
