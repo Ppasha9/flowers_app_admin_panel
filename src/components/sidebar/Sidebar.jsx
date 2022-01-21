@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 
 import SidebarItem from './SidebarItem'
 
-import logo from '../../assets/images/logo.png'
+//import logo from '../../assets/images/logo.png'
+import logo from '../../assets/images/orlove_crm_logo.jpeg'
 import sidebar_items from '../../assets/JsonData/sidebar_routes.json'
 
 import './sidebar.css'
