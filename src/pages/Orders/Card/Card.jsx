@@ -37,6 +37,7 @@ export default function Card({ card, index }) {
                                 </ul>
                             </div>
                         }
+                        <br/>
                         <b>Общая цена: {card.body.fullPrice} ₽</b>
                     </Paper>
                 </div>

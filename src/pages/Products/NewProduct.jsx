@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react"
 import { default as ReactSelect } from "react-select"
 import { components } from "react-select"
 import { AiFillDelete } from "react-icons/ai"
-import { useHistory, Redirect } from "react-router-dom"
+import { Redirect } from "react-router-dom"
 
 import categories_items from "../../assets/JsonData/categories-list.json"
 import tags_items from "../../assets/JsonData/tags-list.json"
@@ -12,7 +12,6 @@ import ProductsRequestsHandler from "./ProductsRequestsHandler";
 import { ClipLoader } from "react-spinners"
 
 const NewProduct = () => {
-    const history = useHistory();
     const [productName, setProductName] = useState("");
     const [productContent, setProductContent] = useState("");
     const [productPrice, setProductPrice] = useState(0);

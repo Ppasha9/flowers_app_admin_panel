@@ -614,7 +614,7 @@ const NewOrder = (props) => {
                         name="date_of_delivery"
                         onChange={(e) => {
                             setDeliveryDate(new Date(e.target.value.toString()))
-                            setDeliveryDateString(`${deliveryDate.getDay()}.${deliveryDate.getMonth()}.${deliveryDate.getFullYear()}`)
+                            setDeliveryDateString(`${deliveryDate.getDay()}.${deliveryDate.getMonth() + 1}.${deliveryDate.getFullYear()}`)
                         }}
                     />
                 </div>

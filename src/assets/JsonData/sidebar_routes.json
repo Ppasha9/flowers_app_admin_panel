@@ -30,8 +30,8 @@
         "icon": "bx bx-bar-chart-alt"
     },
     {
-        "display_name": "Категории",
-        "route": "/categories",
+        "display_name": "Коллекции",
+        "route": "/collections",
         "icon": "bx bx-list-ol"
     },
     {
